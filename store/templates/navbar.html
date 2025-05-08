@@ -8,6 +8,7 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                 
                 {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'update_user' %}">Update Profile</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
@@ -22,9 +23,8 @@
                         <li><a class="dropdown-item" href="{% url 'category_summary' %}">All Products</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         <!-- It only shows up in the category page -->
-                        <li>{% for category in categories %}
-                            <a class="dropdown-item" href="{% url 'category' category %}">{{category}}</a>
-                            {% endfor %}
+                        <li><a class="dropdown-item" href="{% url 'category' 'Shirts' %}">Shirts</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Trousers' %}">Trousers</a></li>
                     </ul>
                 </li>
             </ul>

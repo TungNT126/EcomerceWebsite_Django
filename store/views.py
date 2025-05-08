@@ -4,8 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
 from django import forms
+
 
 def category_summary(request):
     categories = Category.objects.all()
@@ -71,3 +72,41 @@ def register_user(request):
             return redirect('register')
     else:
         return render(request, 'register.html', {'form': form})
+    
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        user_form = UpdateUserForm(request.POST or None, instance=current_user)
+
+        if user_form.is_valid():
+            user_form.save()
+
+            login(request, current_user)
+            messages.success(request, "Profile has been updated!")
+            return redirect('Home')
+        return render(request, 'update_user.html', {"user_form":user_form})
+    else:
+        messages.success(request, "You must be login to update!")
+        return redirect('Home')
+    
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user  
+        # Did they fill out the form
+        if request.method == 'POST':
+            form = ChangePasswordForm(current_user, request.POST)
+            # is the form valid
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your Password has been updated! Please login again.")
+                login(request, current_user)
+                return redirect('login')
+            else:
+                for error in list (form.errors.values()):
+                    messages.error(request, error)
+
+        else:
+            form = ChangePasswordForm(current_user)
+        return render(request, 'update_password.html', {'form':form})
+    else:
+        messages.success(request, 'You must login firs!')
