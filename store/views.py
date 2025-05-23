@@ -83,11 +83,11 @@ def update_user(request):
 
             login(request, current_user)
             messages.success(request, "Profile has been updated!")
-            return redirect('Home')
+            return redirect('home')
         return render(request, 'update_user.html', {"user_form":user_form})
     else:
         messages.success(request, "You must be login to update!")
-        return redirect('Home')
+        return redirect('home')
     
 def update_password(request):
     if request.user.is_authenticated:
